@@ -17,7 +17,9 @@ public class TmdbApiService
     public async Task<MovieSearchResult> SearchMoviesAsync(string query)
     {
         string url = $"{BaseUrl}search/movie?api_key={ApiKey}&query={Uri.EscapeDataString(query)}";
-        return await _httpClient.GetFromJsonAsync<MovieSearchResult>(url);
+        var result = await _httpClient.GetFromJsonAsync<MovieSearchResult>(url);
+        result.Results = result.Results.OrderByDescending(m => m.Popularity).ToList();
+        return result;
     }
 }
 
@@ -30,4 +32,7 @@ public class Movie
 {
     public string Title { get; set; }
     public string Release_Date { get; set; }
+
+    public int Vote_Count { get; set; }
+    public float Popularity { get; set; }
 }

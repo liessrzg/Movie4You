@@ -11,7 +11,7 @@
     {
         @foreach (var movie in movies.Results)
         {
-            <li>@movie.Title (@movie.Release_Date)</li>
+            <li>@movie.Title (@movie.Release_Date) - Popularity: @movie.Popularity</li>
         }
     }
 </ul>
