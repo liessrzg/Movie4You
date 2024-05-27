@@ -1,0 +1,27 @@
+﻿@page "/search"
+@inject TmdbApiService TmdbApiService
+
+<h3>Movie Recommender</h3>
+
+<input @bind="searchQuery" placeholder="Search for a movie..." />
+<button @onclick="SearchMovies">Search</button>
+
+<ul>
+    @if (movies != null)
+    {
+        @foreach (var movie in movies.Results)
+        {
+            <li>@movie.Title (@movie.Release_Date)</li>
+        }
+    }
+</ul>
+
+@code {
+    private string searchQuery;
+    private MovieSearchResult movies;
+
+    private async Task SearchMovies()
+    {
+        movies = await TmdbApiService.SearchMoviesAsync(searchQuery);
+    }
+}
