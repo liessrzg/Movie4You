@@ -1,20 +1,31 @@
 ﻿@page "/search"
 @inject TmdbApiService TmdbApiService
+@inject NavigationManager NavigationManager
+@using Movie4You.Models
 
 <h3>Movie Recommender</h3>
 
-<input @bind="searchQuery" placeholder="Search for a movie..." />
-<button @onclick="SearchMovies">Search</button>
+<div class="search-container">
+    <input @bind="searchQuery" placeholder="Search for a movie..." />
+    <button @onclick="SearchMovies">Search</button>
+</div>
 
-<ul>
-    @if (movies != null)
-    {
+@if (movies != null)
+{
+    <div class="movie-list">
         @foreach (var movie in movies.Results)
         {
-            <li>@movie.Title (@movie.Release_Date) - Popularity: @movie.Popularity</li>
+            <div class="movie-item">
+                <img src="https://image.tmdb.org/t/p/w200/@movie.Poster_Path" alt="@movie.Title poster" />
+                <div>
+                    <h4>@movie.Title (@movie.Release_Date)</h4>
+                    <p>Popularity: @movie.Popularity</p>
+                    <button @onclick="() => NavigateToDetails(movie)">View Details</button>
+                </div>
+            </div>
         }
-    }
-</ul>
+    </div>
+}
 
 @code {
     private string searchQuery;
@@ -23,5 +34,10 @@
     private async Task SearchMovies()
     {
         movies = await TmdbApiService.SearchMoviesAsync(searchQuery);
+    }
+
+    private void NavigateToDetails(Movie movie)
+    {
+        NavigationManager.NavigateTo($"/movie/{movie.Title}");
     }
 }

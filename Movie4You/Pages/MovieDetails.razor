@@ -1,0 +1,31 @@
+﻿@page "/movie/{Title}"
+@inject TmdbApiService TmdbApiService
+@using Movie4You.Models
+<h3>Movie Details</h3>
+
+@if (movie != null)
+{
+    <div class="movie-details">
+        <h2>@movie.Title (@movie.Release_Date)</h2>
+        <img src="https://image.tmdb.org/t/p/w500/@movie.Poster_Path" alt="@movie.Title poster" />
+        <p>@movie.Overview</p>
+        <p>Popularity: @movie.Popularity</p>
+        <p>Vote Count: @movie.Vote_Count</p>
+        <p>Vote Average : @movie.Vote_Average</p>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter] public string Title { get; set; }
+    private Movie movie;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var movies = await TmdbApiService.SearchMoviesAsync(Title);
+        movie = movies.Results.FirstOrDefault(m => m.Title.Equals(Title, StringComparison.OrdinalIgnoreCase));
+    }
+}
